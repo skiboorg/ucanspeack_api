@@ -1,6 +1,5 @@
 from rest_framework import serializers
 
-from alt_parcer import items
 from lesson.models import (
     Course, Level, Lesson, Module, ModuleBlock,
     Video, Phrase, LessonItem, DictionaryGroup, DictionaryItem, ModuleBlockDone, DictionaryItemFavorite, LessonItemFavoriteItem
