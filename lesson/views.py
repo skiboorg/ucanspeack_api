@@ -154,6 +154,7 @@ class LessonViewSet(viewsets.ModelViewSet):
     lookup_field = 'slug'
 
     def get_queryset(self):
+        print('asd')
         user = self.request.user
 
         # ---------- DictionaryItem queryset ----------
@@ -217,6 +218,15 @@ class LessonViewSet(viewsets.ModelViewSet):
             )
         )
 
+        for lesson in lessons_qs:
+            for module in lesson.modules.all():
+                for block in module.blocks.all():
+                    if not block.can_be_done:
+                        ModuleBlockDone.objects.get_or_create(
+                            user=user,
+                            module_block=block,
+                        )
+
         return lessons_qs
 
 
@@ -243,6 +253,8 @@ class ModuleViewSet(viewsets.ModelViewSet):
             module,
             context={"request": request}
         )
+
+
         return Response(serializer.data)
 
     def get_queryset(self):
@@ -274,6 +286,7 @@ class ModuleViewSet(viewsets.ModelViewSet):
             Module.objects
             .annotate(
                 total_blocks=Count('blocks', distinct=True),
+
                 done_blocks=Count(
                     'blocks__moduleblockdone',
                     filter=Q(blocks__moduleblockdone__user=user),
@@ -346,6 +359,9 @@ class ModuleViewSet(viewsets.ModelViewSet):
                 lesson_id = lesson_stats['module__lesson']
                 total_blocks = lesson_stats['total_blocks']
                 done_blocks = lesson_stats['done_blocks']
+
+                print(total_blocks)
+                print(done_blocks)
 
                 # Обновляем статус урока
                 if total_blocks > 0 and done_blocks == total_blocks:

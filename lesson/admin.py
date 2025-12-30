@@ -147,13 +147,7 @@ class ModuleAdmin(admin.ModelAdmin):
             return format_html('{}<br><small>Уровень: {}</small>', lesson_html, level_html)
         return "-"
 
-# --- Админка ModuleBlock ---
-# @admin.register(ModuleBlock)
-# class ModuleBlockAdmin(admin.ModelAdmin):
-#     list_display = ("id",  "sorting", "caption")  # убрал 'title'
-#     search_fields = ("module__title", "caption")
-#     list_filter = ("module",)
-#     inlines = [VideoInline, LessonItemInline]
+
 @admin.register(ModuleBlock)
 class ModuleBlockAdmin(admin.ModelAdmin):
     list_display = ("id", "module", "sorting", "caption_preview", "lesson_info")
@@ -195,7 +189,7 @@ class PhraseAdmin(admin.ModelAdmin):
 
 @admin.register(DictionaryGroup)
 class DictionaryGroupAdmin(admin.ModelAdmin):
-    list_display = ("title", "lesson", "module_info")
+    list_display = ("order","title", "lesson", "module_info")
     search_fields = ("title", "lesson__title")
     list_filter = ("lesson",)
     inlines = [DictionaryItemInline]
