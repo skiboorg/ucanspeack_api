@@ -6,6 +6,7 @@ class Course(models.Model):
     """Курс"""
     title = models.CharField(max_length=255, verbose_name="Название курса")
     slug = models.SlugField(verbose_name="Slug курса",max_length=255)
+    cover = models.FileField(upload_to='lessons/course_covers/', null=True, blank=True)
 
     def __str__(self):
         return self.title
@@ -18,7 +19,7 @@ class Level(models.Model):
     slug = models.SlugField(verbose_name="Slug уровня",max_length=255)
     description = models.TextField(null=True, blank=True, verbose_name="Описание уровня")
     url = models.URLField(max_length=500, verbose_name="URL уровня")
-
+    icon = models.FileField(upload_to='lessons/level_icons/', null=True, blank=True)
     def __str__(self):
         return f"{self.course.title} → {self.title}"
 
@@ -72,6 +73,7 @@ class ModuleBlock(models.Model):
     caption = CKEditor5Field(null=True, blank=True, verbose_name="Текст/описание блока")
     type3_content = CKEditor5Field(blank=True, verbose_name="HTML контент блока (type3)")
     #type3_content = models.JSONField(default=list, blank=True, verbose_name="HTML контент блока (type3)")
+    can_be_done = models.BooleanField('Выполняемыей', default=True,null=False)
 
     def __str__(self):
         return f"Блок {self.sorting} модуля {self.module.title}"
@@ -119,10 +121,11 @@ class DictionaryGroup(models.Model):
     module = models.ForeignKey(Module, on_delete=models.CASCADE, related_name="module_dictionary_groups",
                                      verbose_name="Блок модуля", blank=True, null=True)
     title = models.CharField(max_length=255, verbose_name="Название группы")
-
+    order = models.IntegerField(default=0, null=True)
     def __str__(self):
         return self.title
-
+    class Meta:
+        ordering = ['-order', 'id']
 
 class DictionaryItem(models.Model):
     """Элемент словаря"""

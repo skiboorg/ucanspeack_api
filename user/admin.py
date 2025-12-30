@@ -37,6 +37,7 @@ class UserAdmin(BaseUserAdmin):
                 "full_name",
                 "phone",
                 "avatar",
+             "subscription_expire"
          )}
          ),
         ('Permissions', {'fields': ('is_staff', 'is_superuser', 'groups',)}),)

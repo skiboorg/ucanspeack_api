@@ -66,7 +66,7 @@ class ModuleBlockSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ModuleBlock
-        fields = ["id", "sorting", "caption", "type3_content", "videos", "items","is_done"]
+        fields = ["id", "sorting", "caption", "type3_content", "videos", "items","is_done","can_be_done"]
 
     def get_is_done(self, obj):
         request = self.context.get("request")
@@ -139,7 +139,7 @@ class LevelShortSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Level
-        fields = ["id", "title", "slug", "description", "lessons_count", "progress", "is_done","done_lessons_count",]
+        fields = ["id", "title", "slug", "description", "lessons_count", "progress", "is_done","done_lessons_count","icon"]
 
     def get_lessons_count(self, obj):
         return getattr(obj, 'total_lessons', obj.lessons.count())
@@ -150,6 +150,6 @@ class CourseSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Course
-        fields = ["id", "title", "slug", "levels"]
+        fields = ["id", "title", "slug", "levels","cover"]
 
 
