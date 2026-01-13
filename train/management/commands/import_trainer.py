@@ -125,17 +125,38 @@ class Command(BaseCommand):
             lvl_url = lvl_data.get("url")
             lvl_icon = lvl_data.get("icon")
 
-            level, _ = Level.objects.get_or_create(
+            # level, _ = Level.objects.get_or_create(
+            #     course=course,
+            #     slug=lvl_slug,
+            #     order=x,
+            #     defaults={
+            #         "name": lvl_name,
+            #         "description": lvl_desc,
+            #         "url": lvl_url,
+            #         "icon": lvl_icon
+            #     }
+            # )
+
+            level, created = Level.objects.get_or_create(
                 course=course,
                 slug=lvl_slug,
-                order=x,
                 defaults={
                     "name": lvl_name,
                     "description": lvl_desc,
                     "url": lvl_url,
-                    "icon": lvl_icon
+                    "icon": lvl_icon,
+                    "order": x
                 }
             )
+            if not created:
+                # Обновляем нужные поля
+                level.name = lvl_name
+                level.description = lvl_desc
+                level.url = lvl_url
+                level.icon = lvl_icon
+                level.order = x
+                level.save()
+
             x += 1
             self.stdout.write(self.style.SUCCESS(f"  Уровень: {level.name}"))
 
