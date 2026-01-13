@@ -4,7 +4,7 @@ from django.conf import settings
 
 class Course(models.Model):
     name = models.CharField(max_length=255)
-    slug = models.SlugField(unique=True)
+    slug = models.SlugField(max_length=255,unique=True)
     description = models.TextField(blank=True, null=True)
     icon = models.FileField(upload_to='trainer/course_icons/', null=True, blank=True)
     def save(self, *args, **kwargs):
@@ -19,7 +19,7 @@ class Course(models.Model):
 class Level(models.Model):
     course = models.ForeignKey(Course, related_name="levels", on_delete=models.CASCADE)
     name = models.CharField(max_length=255)
-    slug = models.SlugField()
+    slug = models.SlugField(max_length=255)
     description = models.TextField(blank=True, null=True)
     order = models.IntegerField(blank=True, null=True)
     url = models.CharField(max_length=255, blank=True, null=True)
@@ -36,12 +36,13 @@ class Level(models.Model):
 class Topic(models.Model):
     level = models.ForeignKey(Level, related_name="topics", on_delete=models.CASCADE)
     name = models.CharField(max_length=255)
-    slug = models.SlugField()
+    slug = models.SlugField(max_length=255)
     description = models.TextField(blank=True, null=True)
     url = models.URLField(blank=True, null=True)
     order = models.IntegerField(blank=True, null=True)
     order_txt = models.CharField(max_length=255, blank=True, null=True)
     is_common = models.BooleanField('Обобщающий', default=False)
+
 
     class Meta:
         unique_together = ("level", "slug")
@@ -54,7 +55,7 @@ class Topic(models.Model):
 class AudioFile(models.Model):
     topic = models.ForeignKey(Topic, related_name="audio_files", on_delete=models.CASCADE)
     name = models.CharField(max_length=255)
-    slug = models.SlugField()
+    slug = models.SlugField(max_length=255)
     mp3 = models.URLField()
     description = models.TextField(blank=True, null=True)
     order = models.CharField(max_length=255, blank=True, null=True)
