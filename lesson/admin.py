@@ -41,6 +41,13 @@ class ModuleBlockInline(admin.StackedInline):
     verbose_name = "Блок модуля"
     verbose_name_plural = "Блоки модуля"
 
+class OrthographyItemInline(admin.StackedInline):
+    model = OrthographyItem
+    extra = 0
+    fields = ("order","ru_text", "en_text",)
+    verbose_name = "Задание орфографии"
+    verbose_name_plural = "Задания орфографии"
+
 
 # --- Модули (inline для урока) ---
 class ModuleInline(admin.StackedInline):
@@ -66,7 +73,7 @@ class LessonInline(admin.StackedInline):
 class DictionaryItemInline(admin.TabularInline):
     model = DictionaryItem
     extra = 0
-    fields = ("text_ru", "text_en", "sound")
+    fields = ("text_ru", "text_en", "sound","file")
     verbose_name = "Слово"
     verbose_name_plural = "Слова"
 
@@ -112,7 +119,7 @@ class LessonAdmin(admin.ModelAdmin):
     list_display = ("title", "level", "slug", "url")
     search_fields = ("title", "level__title")
     list_filter = ("level",)
-    inlines = [ModuleInline, DictionaryGroupInline]
+    inlines = [ModuleInline, DictionaryGroupInline,OrthographyItemInline]
 
 #
 # # --- Админка Module ---

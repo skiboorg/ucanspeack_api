@@ -8,7 +8,7 @@ djoser
 django-db-logger
 celery
 redis
-psycopg2
+
 requests
 pytils
 django-colorfield
@@ -16,6 +16,7 @@ django-colorfield
 aiomysql
 asyncpg
 
-mysqlclient
-mysql-connector-python
 beautifulsoup4
+unidecode
+
+psycopg2-binary

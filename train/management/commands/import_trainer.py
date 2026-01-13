@@ -1,8 +1,94 @@
 import json
 import os
 from django.core.management.base import BaseCommand
-from pytils.translit import slugify
+import requests
+from urllib.parse import urlparse
+from django.utils.text import slugify
+from django.core.files.base import ContentFile
 from train.models import Course, Level, Topic, AudioFile, Phrase
+BASE_DOMAIN = "https://platform.ucanspeak.ru"
+
+def normalize_url(url: str) -> str:
+    if not url:
+        return None
+
+    url = url.strip()
+
+    # если относительный путь
+    if url.startswith("/"):
+        url = BASE_DOMAIN + url
+
+    # если без схемы
+    elif not url.startswith("http://") and not url.startswith("https://"):
+        url = BASE_DOMAIN + "/" + url.lstrip("/")
+
+    # убираем #t=0.1 и прочие якоря
+    url = url.split("#")[0]
+
+    return url
+
+def filefield_is_valid(field):
+    """
+    Проверяет:
+    - есть ли путь в БД
+    - существует ли файл
+    - размер > 0
+    """
+
+    if not field:
+        print('not field')
+        return False
+    print('fn',field.name)
+    try:
+        if not field.name:
+            print('not field.name')
+            return False
+
+        path = field.path
+
+        if not os.path.exists(path):
+            print('not os.path.exists')
+            return False
+
+        if os.path.getsize(path) == 0:
+            print('os.path.getsize(path) == 0')
+            return False
+
+        return True
+    except Exception:
+        print('Exception')
+        return False
+
+def download_file_if_needed(model_instance, field_name, url):
+    """
+    Скачивает файл ТОЛЬКО если поле пустое
+    """
+    if not url:
+        return False
+
+    # если файл уже есть — не качаем
+    field = getattr(model_instance, field_name)
+    print(field)
+    print(url,filefield_is_valid(field))
+    if filefield_is_valid(field):
+        # файл уже нормальный
+        return False
+    print(model_instance)
+
+    url = normalize_url(url)
+
+    try:
+        r = requests.get(url, timeout=30)
+        r.raise_for_status()
+    except Exception as e:
+        print(f"❌ Ошибка скачивания: {url} | {e}")
+        return False
+
+    parsed = urlparse(url)
+    filename = os.path.basename(parsed.path) or "file.bin"
+
+    field.save(filename, ContentFile(r.content), save=True)
+    return True
 
 class Command(BaseCommand):
     help = 'Импорт курса из папки с levels.json'
@@ -103,7 +189,7 @@ class Command(BaseCommand):
                 for audio_data in lesson_data.get("audio_files", []):
                     audio_name = audio_data.get("name")
                     audio_slug = audio_data.get("slug") or slugify(audio_name)
-                    AudioFile.objects.get_or_create(
+                    af,_=AudioFile.objects.get_or_create(
                         topic=topic,
                         slug=audio_slug,
                         defaults={
@@ -113,10 +199,11 @@ class Command(BaseCommand):
                             "order": audio_data.get("order")
                         }
                     )
+                    download_file_if_needed(af, "file", audio_data.get("mp3"))
 
                 # Phrases
                 for phrase_data in lesson_data.get("phrases", []):
-                    Phrase.objects.get_or_create(
+                    phrase,_=Phrase.objects.get_or_create(
                         topic=topic,
                         text_ru=phrase_data.get("text_ru"),
                         text_en=phrase_data.get("text_en"),
@@ -125,5 +212,6 @@ class Command(BaseCommand):
                             "order": int(phrase_data.get("order"))
                         }
                     )
+                    download_file_if_needed(phrase, "file", phrase_data.get("mp3"))
 
         self.stdout.write(self.style.SUCCESS("✅ Импорт курса завершён!"))

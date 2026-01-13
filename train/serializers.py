@@ -45,6 +45,7 @@ class AudioFileSerializer(serializers.ModelSerializer):
             "name",
             "slug",
             "mp3",
+            "file",
             "description",
             "order",
         )
@@ -60,6 +61,7 @@ class PhraseSerializer(serializers.ModelSerializer):
             "text_en",
             "sound",
             "order",
+            "file",
             "is_like",
         )
 

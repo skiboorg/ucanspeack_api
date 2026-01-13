@@ -1,3 +1,4 @@
+
 from django.db import models
 from django.conf import settings
 from django_ckeditor_5.fields import CKEditor5Field
@@ -32,7 +33,7 @@ class Lesson(models.Model):
     slug = models.SlugField(verbose_name="Slug урока",max_length=255)
     url = models.URLField(max_length=500, verbose_name="URL урока")
     mp3 = models.URLField(null=True, blank=True, verbose_name="Аудио MP3 урока")
-
+    file = models.FileField(upload_to='lessons/mp3/', null=True, blank=True)
     def __str__(self):
         return f"{self.level.title} → {self.title}"
 
@@ -88,7 +89,7 @@ class LessonItem(models.Model):
     text_ru = models.TextField(null=True, blank=True, verbose_name="Текст на русском")
     text_en = models.TextField(null=True, blank=True, verbose_name="Текст на английском")
     sound = models.URLField(null=True, blank=True, verbose_name="Ссылка на аудио")
-
+    file = models.FileField(upload_to='lessons/module/mp3/', null=True, blank=True)
     def __str__(self):
         return self.text_en or self.text_ru or "Элемент урока"
 
@@ -97,7 +98,7 @@ class Video(models.Model):
     """Видео внутри блока"""
     block = models.ForeignKey(ModuleBlock, on_delete=models.CASCADE,null=True, blank=True, related_name="videos", verbose_name="Блок")
     video_src = models.URLField(verbose_name="Ссылка на видео",null=True, blank=True,)
-
+    file = models.FileField(upload_to='lessons/module/video/', null=True, blank=True)
     def __str__(self):
         return self.video_src
 
@@ -110,7 +111,7 @@ class Phrase(models.Model):
     text_en = models.TextField(null=True, blank=True, verbose_name="Текст на английском")
     text_ru = models.TextField(null=True, blank=True, verbose_name="Текст на русском")
     sound = models.URLField(null=True, blank=True, verbose_name="Ссылка на аудио")
-
+    file = models.FileField(upload_to='lessons/module/video/phrase', null=True, blank=True)
     def __str__(self):
         return self.text_en or self.text_ru or "Фраза видео"
 
@@ -133,7 +134,7 @@ class DictionaryItem(models.Model):
     text_ru = models.TextField(null=True, blank=True, verbose_name="Текст на русском")
     text_en = models.TextField(null=True, blank=True, verbose_name="Текст на английском")
     sound = models.CharField(max_length=255, null=True, blank=True, verbose_name="Ссылка на аудио")
-
+    file = models.FileField(upload_to='lessons/dictionary/mp3', null=True, blank=True)
     def __str__(self):
         return self.text_en or self.text_ru or "Элемент словаря"
 
@@ -157,3 +158,20 @@ class DictionaryItemFavorite(models.Model):
 class LessonItemFavoriteItem(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE,blank=True,null=True)
     lesson_item = models.ForeignKey(LessonItem,on_delete=models.CASCADE,blank=True,null=True, related_name="lesson_item_favorites")
+
+
+class OrthographyItem(models.Model):
+    order = models.IntegerField(default=0, null=True)
+    lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE, blank=True, null=True,
+                                    related_name="orthography_items")
+    ru_text = models.TextField('Русский текст', null=True, blank=False)
+    en_text = models.TextField('Англ. текст', null=True, blank=False)
+
+    def __str__(self):
+        return self.ru_text
+    class Meta:
+        ordering = ['-order']
+
+class OrthographyItemDone(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, blank=True, null=True)
+    orthography_item = models.ForeignKey(OrthographyItem, on_delete=models.CASCADE, blank=True, null=True)

@@ -2,14 +2,15 @@ from rest_framework import serializers
 
 from lesson.models import (
     Course, Level, Lesson, Module, ModuleBlock,
-    Video, Phrase, LessonItem, DictionaryGroup, DictionaryItem, ModuleBlockDone, DictionaryItemFavorite, LessonItemFavoriteItem
+    Video, Phrase, LessonItem, DictionaryGroup, DictionaryItem, ModuleBlockDone, DictionaryItemFavorite,
+    LessonItemFavoriteItem,OrthographyItem,OrthographyItemDone
 )
 
 class DictionaryItemSerializer(serializers.ModelSerializer):
     is_favorite = serializers.BooleanField(read_only=True)
     class Meta:
         model = DictionaryItem
-        fields = ["id", "text_ru", "text_en", "sound","is_favorite"]
+        fields = ["id", "text_ru", "text_en", "sound","is_favorite","file"]
 
 
 
@@ -37,7 +38,7 @@ class DictionaryGroupSerializer(serializers.ModelSerializer):
 class PhraseSerializer(serializers.ModelSerializer):
     class Meta:
         model = Phrase
-        fields = ["id", "start_time", "end_time", "text_en", "text_ru", "sound"]
+        fields = ["id", "start_time", "end_time", "text_en", "text_ru", "sound",'file']
 
 
 class VideoSerializer(serializers.ModelSerializer):
@@ -45,7 +46,7 @@ class VideoSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Video
-        fields = ["id", "video_src", "phrases"]
+        fields = ["id", "video_src", "phrases",'file']
 
 
 class LessonItemSerializer(serializers.ModelSerializer):
@@ -53,7 +54,7 @@ class LessonItemSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = LessonItem
-        fields = ["id", "text_ru", "text_en", "sound","is_like"]
+        fields = ["id", "text_ru", "text_en", "file","is_like"]
 
     def get_is_like(self, obj):
         return bool(getattr(obj, "user_favorites", []))
@@ -98,15 +99,22 @@ class ModuleShortSerializer(serializers.ModelSerializer):
         model = Module
         fields = ["id", "title", "index", "url", "sorting","is_done"]
 
+class OrthographyItemSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = OrthographyItem
+        fields = ["id", "ru_text", "en_text", "order",]
+
 class LessonSerializer(serializers.ModelSerializer):
     modules = ModuleShortSerializer(many=True, read_only=True)
     progress = serializers.IntegerField(read_only=True)
     is_done = serializers.BooleanField(read_only=True)
     dictionary_groups = DictionaryGroupSerializer(many=True, read_only=True)
-
+    orthography_items = OrthographyItemSerializer(many=True, read_only=True)
     class Meta:
         model = Lesson
-        fields = ["id", "title", "slug", "url", "mp3", "modules","progress", "is_done","dictionary_groups"]
+        fields = ["id", "title", "slug", "url", "mp3","file",
+                  "modules","progress", "is_done","dictionary_groups","orthography_items"]
 
 class LessonShortSerializer(serializers.ModelSerializer):
     progress = serializers.IntegerField(read_only=True)

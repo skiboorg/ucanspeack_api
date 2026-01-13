@@ -41,7 +41,7 @@ class Topic(models.Model):
     url = models.URLField(blank=True, null=True)
     order = models.IntegerField(blank=True, null=True)
     order_txt = models.CharField(max_length=50, blank=True, null=True)
-
+    is_common = models.BooleanField('Обобщающий', default=False)
 
     class Meta:
         unique_together = ("level", "slug")
@@ -58,7 +58,7 @@ class AudioFile(models.Model):
     mp3 = models.URLField()
     description = models.TextField(blank=True, null=True)
     order = models.CharField(max_length=50, blank=True, null=True)
-
+    file = models.FileField(upload_to='trainer/mp3', null=True, blank=True)
     class Meta:
         ordering = ["order"]
 
@@ -72,7 +72,7 @@ class Phrase(models.Model):
     text_en = models.TextField()
     sound = models.URLField(blank=True, null=True)
     order = models.IntegerField(blank=True, null=True)
-
+    file = models.FileField(upload_to='trainer/phrase', null=True, blank=True)
     class Meta:
         ordering = ["order"]
 

@@ -43,7 +43,7 @@ class User(AbstractUser):
     school = models.ForeignKey(School, on_delete=models.SET_NULL, null=True, blank=True)
     is_school = models.BooleanField('Это школа', default=False, null=False)
 
-    uuid = models.UUIDField(default=uuid.uuid4(), editable=False)
+    uuid = models.UUIDField(default=uuid.uuid4, editable=False)
     avatar = models.FileField(upload_to='avatars', null=True, blank=True)
     email = models.CharField('Почта', max_length=255, blank=True, null=True, unique=True)
     login = models.CharField('Логин', max_length=255, blank=True, null=True, unique=True)
