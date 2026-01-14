@@ -217,15 +217,15 @@ class LessonViewSet(viewsets.ModelViewSet):
                 queryset=dictionary_items_qs
             )
         )
-
-        for lesson in lessons_qs:
-            for module in lesson.modules.all():
-                for block in module.blocks.all():
-                    if not block.can_be_done:
-                        ModuleBlockDone.objects.get_or_create(
-                            user=user,
-                            module_block=block,
-                        )
+        print(lessons_qs)
+        # for lesson in lessons_qs:
+        #     for module in lesson.modules.all():
+        #         for block in module.blocks.all():
+        #             if not block.can_be_done:
+        #                 ModuleBlockDone.objects.get_or_create(
+        #                     user=user,
+        #                     module_block=block,
+        #                 )
 
         return lessons_qs
 
@@ -397,6 +397,8 @@ class PhraseViewSet(viewsets.ModelViewSet):
 class DictionaryGroupViewSet(viewsets.ModelViewSet):
     queryset = DictionaryGroup.objects.all()
     serializer_class = DictionaryGroupSerializer
+
+
 
 
 class DictionaryItemViewSet(viewsets.ModelViewSet):
