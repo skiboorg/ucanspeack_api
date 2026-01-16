@@ -217,7 +217,7 @@ class LessonViewSet(viewsets.ModelViewSet):
                 queryset=dictionary_items_qs
             )
         )
-        print(lessons_qs)
+
         # for lesson in lessons_qs:
         #     for module in lesson.modules.all():
         #         for block in module.blocks.all():

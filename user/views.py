@@ -2,12 +2,19 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from user.serializers.me import UserSerializer
-
+from djoser.views import TokenCreateView
 from rest_framework import generics, viewsets, parsers
 
 import logging
 logger = logging.getLogger(__name__)
 
+
+
+
+class CustomTokenCreateView(TokenCreateView):
+    def _action(self, serializer):
+        serializer.is_valid(raise_exception=True)
+        return Response(serializer.validated_data, status=200)
 
 class GetUser(generics.RetrieveAPIView):
     # permission_classes = [IsAuthenticated]

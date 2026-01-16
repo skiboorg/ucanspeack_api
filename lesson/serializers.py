@@ -111,10 +111,15 @@ class LessonSerializer(serializers.ModelSerializer):
     is_done = serializers.BooleanField(read_only=True)
     dictionary_groups = DictionaryGroupSerializer(many=True, read_only=True)
     orthography_items = OrthographyItemSerializer(many=True, read_only=True)
+    level_title = serializers.SerializerMethodField()
+
     class Meta:
         model = Lesson
         fields = ["id", "title", "slug", "url", "mp3","file",
-                  "modules","progress", "is_done","dictionary_groups","orthography_items"]
+                  "modules","progress", "is_done","dictionary_groups","orthography_items","level_title"]
+
+    def get_level_title(self, obj):
+        return obj.level.title
 
 class LessonShortSerializer(serializers.ModelSerializer):
     progress = serializers.IntegerField(read_only=True)
@@ -147,7 +152,8 @@ class LevelShortSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Level
-        fields = ["id", "title", "slug", "description", "lessons_count", "progress", "is_done","done_lessons_count","icon"]
+        fields = ["id", "title", "slug", "description", "lessons_count", "progress",
+                  "is_done","done_lessons_count","icon"]
 
     def get_lessons_count(self, obj):
         return getattr(obj, 'total_lessons', obj.lessons.count())

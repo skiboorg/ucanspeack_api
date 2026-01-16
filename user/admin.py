@@ -45,9 +45,56 @@ class UserAdmin(BaseUserAdmin):
 
 admin.site.register(User,UserAdmin)
 
+@admin.register(UserToken)
+class UserTokenAdmin(admin.ModelAdmin):
+    list_display = (
+        "id",
+        "user",
+        "user_email",
+        "user_login",
+        "created",
+        "short_key",
+    )
+
+    list_select_related = ("user",)
+
+    search_fields = (
+        "user__email",
+        "user__login",
+        "user__full_name",
+        "key",
+    )
+
+    list_filter = (
+        "created",
+    )
+
+    ordering = ("-created",)
+
+    readonly_fields = ("created", "key")
+
+    def user_email(self, obj):
+        return obj.user.email
+
+    def user_login(self, obj):
+        return obj.user.login
+
+    def short_key(self, obj):
+        return obj.key[:12] + "..."
+
+    user_email.short_description = "Email"
+    user_login.short_description = "Login"
+    short_key.short_description = "Token"
 
 
 
 
+@admin.register(School)
+class SchoolAdmin(admin.ModelAdmin):
+    list_display = (
+        "id",
+        "admin__email",
+        "name",
+    )
 
 

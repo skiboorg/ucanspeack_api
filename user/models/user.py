@@ -70,9 +70,11 @@ class User(AbstractUser):
 def user_post_save(sender, instance, created, **kwargs):
     #import monthdelta
     #datetime.date.today() + monthdelta.monthdelta(months=1)
-
+    from user.services.school import create_school
     if created:
         print('created')
+        if instance.is_school:
+            create_school(admin_user=instance)
 
 
 post_save.connect(user_post_save, sender=User)
