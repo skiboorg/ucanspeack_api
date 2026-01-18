@@ -116,9 +116,6 @@ def download_file(url):
 
     return filename, ContentFile(r.content)
 
-# ===============================
-# 🚀 КОМАНДА
-# ===============================
 
 class Command(BaseCommand):
     help = "Импорт курса с автоскачиванием всех файлов"
@@ -149,9 +146,7 @@ class Command(BaseCommand):
 
         self.stdout.write(self.style.SUCCESS(f"📘 Курс: {course.title}"))
 
-        # ===============================
-        # УРОВНИ
-        # ===============================
+
 
         for level_data in levels_data:
             level_title = level_data["title"]
@@ -180,9 +175,7 @@ class Command(BaseCommand):
 
             lessons_folder = os.path.join(course_path, level_slug, "lessons")
 
-            # ===============================
-            # УРОКИ
-            # ===============================
+
 
             for lesson_data in lessons_data:
                 lesson_title = lesson_data["title"]
@@ -208,9 +201,7 @@ class Command(BaseCommand):
                 #         lesson.file.save(filename, content, save=True)
                 download_file_if_needed(lesson, "file", lesson_data.get("mp3"))
 
-                # ===============================
-                # СЛОВАРЬ
-                # ===============================
+
 
                 dict_path = os.path.join(lessons_folder, lesson_slug, "dictionary.json")
                 if os.path.exists(dict_path):
@@ -237,9 +228,7 @@ class Command(BaseCommand):
                             #         di.file.save(filename, content, save=True)
                             download_file_if_needed(di, "file", item.get("sound"))
 
-                # ===============================
-                # МОДУЛИ
-                # ===============================
+
 
                 lesson_folder = os.path.join(lessons_folder, lesson_slug)
 
@@ -266,9 +255,7 @@ class Command(BaseCommand):
                         defaults={"index": index.strip()}
                     )
 
-                    # ===============================
-                    # БЛОКИ
-                    # ===============================
+
 
                     for i, block_data in enumerate(module_data):
                         if not isinstance(block_data, dict):
@@ -280,9 +267,7 @@ class Command(BaseCommand):
                             type3_content=block_data.get("type3_content", "")
                         )
 
-                        # ===============================
-                        # ФРАЗЫ
-                        # ===============================
+
 
                         for item in block_data.get("items", []):
                             li,_ = LessonItem.objects.get_or_create(
@@ -298,9 +283,7 @@ class Command(BaseCommand):
                             #         li.file.save(filename, content, save=True)
                             download_file_if_needed(li, "file", item.get("sound"))
 
-                        # ===============================
-                        # ВИДЕО
-                        # ===============================
+
 
                         for vid in block_data.get("videos", []):
                             video,_ = Video.objects.get_or_create(
@@ -315,9 +298,6 @@ class Command(BaseCommand):
                             download_file_if_needed(video, "file", vid.get("video_src"))
 
 
-                            # ===============================
-                            # ФРАЗЫ ВИДЕО
-                            # ===============================
 
                             for phrase_data in vid.get("phrases", []):
                                 phrase,_ = Phrase.objects.get_or_create(

@@ -36,7 +36,8 @@ INSTALLED_APPS = [
     'django_ckeditor_5',
     'user.apps.UserConfig',
     'lesson.apps.LessonConfig',
-    'train.apps.TrainConfig'
+    'train.apps.TrainConfig',
+    'search.apps.SearchConfig'
 ]
 
 MIDDLEWARE = [

@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils.text import slugify
 from django.conf import settings
+from django.contrib.postgres.indexes import GinIndex
 
 class Course(models.Model):
     name = models.CharField(max_length=255)
@@ -47,6 +48,13 @@ class Topic(models.Model):
     class Meta:
         unique_together = ("level", "slug")
         ordering = ["order"]
+        indexes = [
+            GinIndex(
+                name="trainer_topic_name_trgm",
+                fields=["name"],
+                opclasses=["gin_trgm_ops"],
+            ),
+        ]
 
     def __str__(self):
         return f"{self.level.name} - {self.name}"
@@ -60,12 +68,19 @@ class AudioFile(models.Model):
     description = models.TextField(blank=True, null=True)
     order = models.CharField(max_length=255, blank=True, null=True)
     file = models.FileField(upload_to='trainer/mp3', null=True, blank=True)
-    class Meta:
-        ordering = ["order"]
 
     def __str__(self):
         return f"{self.topic.name} - {self.name}"
 
+    class Meta:
+        ordering = ["order"]
+        indexes = [
+            GinIndex(
+                name="trainer_audio_name_trgm",
+                fields=["name"],
+                opclasses=["gin_trgm_ops"],
+            ),
+        ]
 
 class Phrase(models.Model):
     topic = models.ForeignKey(Topic, related_name="phrases", on_delete=models.CASCADE)
@@ -74,8 +89,21 @@ class Phrase(models.Model):
     sound = models.URLField(blank=True, null=True)
     order = models.IntegerField(blank=True, null=True)
     file = models.FileField(upload_to='trainer/phrase', null=True, blank=True)
+
     class Meta:
         ordering = ["order"]
+        indexes = [
+            GinIndex(
+                name="trainer_phrase_ru_trgm",
+                fields=["text_ru"],
+                opclasses=["gin_trgm_ops"],
+            ),
+            GinIndex(
+                name="trainer_phrase_en_trgm",
+                fields=["text_en"],
+                opclasses=["gin_trgm_ops"],
+            ),
+        ]
 
     def __str__(self):
         return f"{self.text_ru} / {self.text_en}"

@@ -3,6 +3,8 @@ from django.db import models
 from django.conf import settings
 from django_ckeditor_5.fields import CKEditor5Field
 
+from django.contrib.postgres.indexes import GinIndex
+
 class Course(models.Model):
     """Курс"""
     title = models.CharField(max_length=255, verbose_name="Название курса")
@@ -37,6 +39,14 @@ class Lesson(models.Model):
     def __str__(self):
         return f"{self.level.title} → {self.title}"
 
+    class Meta:
+        indexes = [
+            GinIndex(
+                name="lesson_title_trgm",
+                fields=["title"],
+                opclasses=["gin_trgm_ops"],
+            ),
+        ]
 
 
 
@@ -66,6 +76,13 @@ class Module(models.Model):
 
     class Meta:
         ordering = ['sorting']
+        indexes = [
+            GinIndex(
+                name="module_title_trgm",
+                fields=["title"],
+                opclasses=["gin_trgm_ops"],
+            ),
+        ]
 
 class ModuleBlock(models.Model):
     """Блок контента внутри модуля"""
@@ -93,12 +110,26 @@ class LessonItem(models.Model):
     def __str__(self):
         return self.text_en or self.text_ru or "Элемент урока"
 
+    class Meta:
+        indexes = [
+            GinIndex(
+                name="lessonitem_text_ru_trgm",
+                fields=["text_ru"],
+                opclasses=["gin_trgm_ops"],
+            ),
+            GinIndex(
+                name="lessonitem_text_en_trgm",
+                fields=["text_en"],
+                opclasses=["gin_trgm_ops"],
+            ),
+        ]
 
 class Video(models.Model):
     """Видео внутри блока"""
     block = models.ForeignKey(ModuleBlock, on_delete=models.CASCADE,null=True, blank=True, related_name="videos", verbose_name="Блок")
     video_src = models.URLField(verbose_name="Ссылка на видео",null=True, blank=True,)
     file = models.FileField(upload_to='lessons/module/video/', null=True, blank=True)
+    video_number = models.CharField(max_length=10, blank=True, null=True)
     def __str__(self):
         return self.video_src
 
@@ -115,6 +146,19 @@ class Phrase(models.Model):
     def __str__(self):
         return self.text_en or self.text_ru or "Фраза видео"
 
+    class Meta:
+        indexes = [
+            GinIndex(
+                name="lesson_phrase_text_ru_trgm",
+                fields=["text_ru"],
+                opclasses=["gin_trgm_ops"],
+            ),
+            GinIndex(
+                name="lesson_phrase_text_en_trgm",
+                fields=["text_en"],
+                opclasses=["gin_trgm_ops"],
+            ),
+        ]
 
 class DictionaryGroup(models.Model):
     """Группа слов в словаре урока"""
@@ -135,12 +179,23 @@ class DictionaryItem(models.Model):
     text_en = models.TextField(null=True, blank=True, verbose_name="Текст на английском")
     sound = models.CharField(max_length=255, null=True, blank=True, verbose_name="Ссылка на аудио")
     file = models.FileField(upload_to='lessons/dictionary/mp3', null=True, blank=True)
+
     def __str__(self):
         return self.text_en or self.text_ru or "Элемент словаря"
 
-
-
-
+    class Meta:
+        indexes = [
+            GinIndex(
+                name="dict_text_ru_trgm",
+                fields=["text_ru"],
+                opclasses=["gin_trgm_ops"],
+            ),
+            GinIndex(
+                name="dict_text_en_trgm",
+                fields=["text_en"],
+                opclasses=["gin_trgm_ops"],
+            ),
+        ]
 
 class ModuleBlockDone(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE,blank=True,null=True)
@@ -169,8 +224,21 @@ class OrthographyItem(models.Model):
 
     def __str__(self):
         return self.ru_text
+
     class Meta:
         ordering = ['-order']
+        indexes = [
+            GinIndex(
+                name="ortho_ru_trgm",
+                fields=["ru_text"],
+                opclasses=["gin_trgm_ops"],
+            ),
+            GinIndex(
+                name="ortho_en_trgm",
+                fields=["en_text"],
+                opclasses=["gin_trgm_ops"],
+            ),
+        ]
 
 class OrthographyItemDone(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, blank=True, null=True)

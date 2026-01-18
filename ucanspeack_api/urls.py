@@ -13,7 +13,7 @@ urlpatterns = [
     path('api/lesson/', include('lesson.urls')),
     path('api/trainer/', include('train.urls')),
     path('api/user/', include('user.urls')),
-
+    path("api/search/", include("search.urls")),
     path('auth/', include('djoser.urls')),
     #path('auth/', include('djoser.urls.authtoken')),
     path("auth/token/login/", CustomTokenCreateView.as_view(), name="login"),
