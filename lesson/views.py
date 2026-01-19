@@ -174,7 +174,7 @@ class LessonViewSet(viewsets.ModelViewSet):
                 for video in block.videos.all():
                     all_videos.append(video)
 
-        serializer = VideoSerializer(all_videos, many=True)
+        serializer = VideoSerializer(all_videos, many=True, context={"request": request})
         return Response(serializer.data)
 
     def get_queryset(self):

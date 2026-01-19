@@ -43,10 +43,18 @@ class PhraseSerializer(serializers.ModelSerializer):
 
 class VideoSerializer(serializers.ModelSerializer):
     phrases = PhraseSerializer(many=True, read_only=True)
+    file = serializers.SerializerMethodField()
 
     class Meta:
         model = Video
-        fields = ["id", "video_src", "phrases",'file','video_number']
+        fields = ["id", "video_src", "phrases", "file", "video_number"]
+
+    def get_file(self, obj):
+        request = self.context.get("request")
+        print(request.build_absolute_uri(obj.file.url))
+        if obj.file and request:
+            return request.build_absolute_uri(obj.file.url)
+        return None
 
 
 class LessonItemSerializer(serializers.ModelSerializer):

@@ -20,6 +20,7 @@ class GlobalSearchAPIView(APIView):
                 fields=cfg["fields"],
                 values=cfg["values"],
                 query=q,
+                request=request,   # ← ВАЖНО
             )
 
         return Response(results)
