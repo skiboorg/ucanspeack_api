@@ -36,6 +36,7 @@ class Lesson(models.Model):
     url = models.URLField(max_length=500, verbose_name="URL урока")
     mp3 = models.URLField(null=True, blank=True, verbose_name="Аудио MP3 урока")
     file = models.FileField(upload_to='lessons/mp3/', null=True, blank=True)
+    table = models.TextField(null=True, blank=True)
     def __str__(self):
         return f"{self.level.title} → {self.title}"
 

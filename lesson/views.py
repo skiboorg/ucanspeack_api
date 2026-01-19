@@ -153,6 +153,30 @@ class LessonViewSet(viewsets.ModelViewSet):
     serializer_class = LessonSerializer
     lookup_field = 'slug'
 
+    @action(detail=True, methods=['get'])
+    def get_table(self, request, slug=None):
+        """Возвращает HTML таблицы урока"""
+        lesson = self.get_object()
+        return Response({
+            "slug": lesson.slug,
+            "table": lesson.table
+        })
+
+    @action(detail=True, methods=['get'])
+    def videos(self, request, slug=None):
+        """Все видео урока с фразами"""
+        lesson = self.get_object()
+        all_videos = []
+
+        # Проходим по модулям → блокам → видео
+        for module in lesson.modules.all():
+            for block in module.blocks.all():
+                for video in block.videos.all():
+                    all_videos.append(video)
+
+        serializer = VideoSerializer(all_videos, many=True)
+        return Response(serializer.data)
+
     def get_queryset(self):
         print('asd')
         user = self.request.user

@@ -46,7 +46,7 @@ class VideoSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Video
-        fields = ["id", "video_src", "phrases",'file']
+        fields = ["id", "video_src", "phrases",'file','video_number']
 
 
 class LessonItemSerializer(serializers.ModelSerializer):
@@ -112,14 +112,18 @@ class LessonSerializer(serializers.ModelSerializer):
     dictionary_groups = DictionaryGroupSerializer(many=True, read_only=True)
     orthography_items = OrthographyItemSerializer(many=True, read_only=True)
     level_title = serializers.SerializerMethodField()
+    have_table = serializers.SerializerMethodField()
 
     class Meta:
         model = Lesson
         fields = ["id", "title", "slug", "url", "mp3","file",
-                  "modules","progress", "is_done","dictionary_groups","orthography_items","level_title"]
+                  "modules","progress", "is_done","dictionary_groups","orthography_items","level_title","have_table"]
 
     def get_level_title(self, obj):
         return obj.level.title
+
+    def get_have_table(self, obj):
+        return bool(obj.table)
 
 class LessonShortSerializer(serializers.ModelSerializer):
     progress = serializers.IntegerField(read_only=True)

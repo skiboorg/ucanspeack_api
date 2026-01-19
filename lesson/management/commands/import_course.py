@@ -13,6 +13,9 @@ from lesson.models import (
 
 BASE_DOMAIN = "https://platform.ucanspeak.ru"
 
+
+
+
 def normalize_url(url: str) -> str:
     if not url:
         return None
@@ -181,10 +184,21 @@ class Command(BaseCommand):
                 lesson_title = lesson_data["title"]
                 lesson_slug = lesson_data.get("title_slug") or slugify(lesson_title)
 
+                lesson_folder = os.path.join(lessons_folder, lesson_slug)
+                table_json_path = os.path.join(lesson_folder, "table_1.json")
+
+                table_image_base64 = None
+
+                if os.path.exists(table_json_path):
+                    with open(table_json_path, "r", encoding="utf-8") as f:
+                        table_data = json.load(f)
+                        table_image_base64 = table_data.get("image_base64")
+
                 lesson, _ = Lesson.objects.get_or_create(
                     level=level,
                     title=lesson_title,
                     defaults={
+                        "table": table_image_base64,
                         "slug": lesson_slug,
                         "url": lesson_data.get("url"),
                         "short_description": lesson_data.get("short_description"),
@@ -249,10 +263,17 @@ class Command(BaseCommand):
                         index, _, mod_title = file.partition("_")
                         mod_title = mod_title.replace(".json", "").replace("_", " ")
 
+                    mod_title_clean = mod_title.strip()
+
+                    # ❌ пропускаем ненужные модули
+                    if mod_title_clean.lower() == "видео" or index.strip().lower() == "table":
+                        print("⏭ Пропущен модуль:", file)
+                        continue
+
                     module, _ = Module.objects.get_or_create(
                         lesson=lesson,
-                        title=mod_title.strip(),
-                        defaults={"index": index.strip()}
+                        title=mod_title_clean,
+                        index=index.strip()
                     )
 
 
@@ -288,6 +309,7 @@ class Command(BaseCommand):
                         for vid in block_data.get("videos", []):
                             video,_ = Video.objects.get_or_create(
                                 block=block,
+                                video_number=vid.get("video_number"),
                                 video_src=vid.get("video_src"),
                             )
 
