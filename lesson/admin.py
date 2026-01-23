@@ -53,7 +53,7 @@ class OrthographyItemInline(admin.StackedInline):
 class ModuleInline(admin.StackedInline):
     model = Module
     extra = 0
-    fields = ("index", "title", "url", "sorting")
+    fields = ("index", "title",  "sorting")
     inlines = [ModuleBlockInline]
     verbose_name = "Модуль"
     verbose_name_plural = "Модули"
@@ -73,7 +73,7 @@ class LessonInline(admin.StackedInline):
 class DictionaryItemInline(admin.TabularInline):
     model = DictionaryItem
     extra = 0
-    fields = ("text_ru", "text_en", "sound","file")
+    fields = ("text_ru", "text_en","file")
     verbose_name = "Слово"
     verbose_name_plural = "Слова"
 
@@ -91,7 +91,7 @@ class DictionaryGroupInline(admin.StackedInline):
 class LevelInline(admin.StackedInline):
     model = Level
     extra = 0
-    fields = ("title", "slug", "description", "url")
+    fields = ("title", "slug", "description",)
     inlines = [LessonInline]
     verbose_name = "Уровень"
     verbose_name_plural = "Уровни"
@@ -116,7 +116,7 @@ class LevelAdmin(admin.ModelAdmin):
 # --- Админка Lesson ---
 @admin.register(Lesson)
 class LessonAdmin(admin.ModelAdmin):
-    list_display = ("title", "level", "slug", "url")
+    list_display = ("title", "level", "slug",)
     search_fields = ("title", "level__title")
     list_filter = ("level",)
     inlines = [ModuleInline, DictionaryGroupInline,OrthographyItemInline]
@@ -132,7 +132,7 @@ class LessonAdmin(admin.ModelAdmin):
 
 @admin.register(Module)
 class ModuleAdmin(admin.ModelAdmin):
-    list_display = ("title", "lesson_with_level", "index", "sorting", "url")
+    list_display = ("title", "lesson_with_level", "index", "sorting",)
     search_fields = ("title", "lesson__title", "lesson__level__title")
     list_filter = ("lesson", "lesson__level")
     inlines = [ModuleBlockInline]
@@ -182,15 +182,15 @@ class ModuleBlockAdmin(admin.ModelAdmin):
 # --- Админка Video ---
 @admin.register(Video)
 class VideoAdmin(admin.ModelAdmin):
-    list_display = ("id", "video_src")  # оставил правильный ForeignKey
-    search_fields = ("video_src",)
+    list_display = ("id", "video_number")  # оставил правильный ForeignKey
+    search_fields = ("video_number",)
     inlines = [PhraseInline]
 
 
 # --- Админка Phrase ---
 @admin.register(Phrase)
 class PhraseAdmin(admin.ModelAdmin):
-    list_display = ("text_en", "text_ru", "video")
+    list_display = ("text_en", "text_ru",)
     search_fields = ("text_en", "text_ru")
 
 

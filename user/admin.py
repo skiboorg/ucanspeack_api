@@ -33,6 +33,7 @@ class UserAdmin(BaseUserAdmin):
         ('Personal info',
          {'fields': (
              'login',
+             'max_logins',
              'is_school',
                 "full_name",
                 "phone",

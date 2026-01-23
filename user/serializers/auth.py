@@ -25,7 +25,7 @@ class CustomTokenCreateSerializer(TokenCreateSerializer):
 
         # проверяем количество активных сессий
         count = UserToken.objects.filter(user=user).count()
-        if count >= MAX_SESSIONS:
+        if count >= user.max_logins:
             raise serializers.ValidationError("Maximum sessions limit reached")
 
         token = UserToken.objects.create(user=user)

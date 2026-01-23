@@ -54,6 +54,7 @@ class User(AbstractUser):
     last_lesson_url = models.CharField(max_length=255, blank=True, null=True)
 
     subscription_expire = models.DateField('Подписка до', blank=True, null=True)
+    max_logins = models.IntegerField('Одновременное кол-во подключений', default=5, null=True)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []

@@ -10,6 +10,7 @@ class Course(models.Model):
     title = models.CharField(max_length=255, verbose_name="Название курса")
     slug = models.SlugField(verbose_name="Slug курса",max_length=255)
     cover = models.FileField(upload_to='lessons/course_covers/', null=True, blank=True)
+    bg_color = models.CharField(max_length=20, null=True, blank=True)
 
     def __str__(self):
         return self.title
@@ -21,7 +22,7 @@ class Level(models.Model):
     title = models.CharField(max_length=255, verbose_name="Название уровня")
     slug = models.SlugField(verbose_name="Slug уровня",max_length=255)
     description = models.TextField(null=True, blank=True, verbose_name="Описание уровня")
-    url = models.URLField(max_length=500, verbose_name="URL уровня")
+    url = models.URLField(max_length=500, verbose_name="URL уровня", null=True, blank=True)
     icon = models.FileField(upload_to='lessons/level_icons/', null=True, blank=True)
     def __str__(self):
         return f"{self.course.title} → {self.title}"
@@ -33,10 +34,12 @@ class Lesson(models.Model):
     title = models.CharField(max_length=255, verbose_name="Название урока")
     short_description = models.CharField(max_length=255, verbose_name="Описание урока", null=True, blank=True)
     slug = models.SlugField(verbose_name="Slug урока",max_length=255)
-    url = models.URLField(max_length=500, verbose_name="URL урока")
+    url = models.URLField(max_length=500, verbose_name="URL урока", null=True, blank=True)
     mp3 = models.URLField(null=True, blank=True, verbose_name="Аудио MP3 урока")
     file = models.FileField(upload_to='lessons/mp3/', null=True, blank=True)
     table = models.TextField(null=True, blank=True)
+    table_file = models.ImageField(upload_to='lesson/table',null=True, blank=True)
+    orthography_description = models.TextField(verbose_name="Описание блока орфографии", null=True, blank=True)
     def __str__(self):
         return f"{self.level.title} → {self.title}"
 

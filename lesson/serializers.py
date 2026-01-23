@@ -124,8 +124,22 @@ class LessonSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Lesson
-        fields = ["id", "title", "slug", "url", "mp3","file",
-                  "modules","progress", "is_done","dictionary_groups","orthography_items","level_title","have_table"]
+        fields = ["id",
+                  "title",
+                  "slug",
+                  "url",
+                  "mp3",
+                  "file",
+                  "modules",
+                  "progress",
+                  "is_done",
+                  "dictionary_groups",
+                  "orthography_items",
+                  "level_title",
+                  "have_table",
+                  "orthography_description",
+                  "table_file"
+                  ]
 
     def get_level_title(self, obj):
         return obj.level.title
@@ -176,6 +190,6 @@ class CourseSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Course
-        fields = ["id", "title", "slug", "levels","cover"]
+        fields = ["id", "title", "slug", "levels","cover",'bg_color']
 
 
