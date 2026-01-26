@@ -34,6 +34,7 @@ class TopicListSerializer(serializers.ModelSerializer):
             "order",
             "order_txt",
             "url",
+            "is_common"
         )
 
 
