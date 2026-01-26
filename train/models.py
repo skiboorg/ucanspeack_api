@@ -29,7 +29,7 @@ class Level(models.Model):
 
 
     class Meta:
-        ordering = ['-order_num']
+        ordering = ['order_num']
         unique_together = ("course", "slug")
 
 

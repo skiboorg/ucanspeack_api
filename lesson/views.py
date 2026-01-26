@@ -115,7 +115,7 @@ class LevelViewSet(viewsets.ModelViewSet):
                 default=Value(False),
                 output_field=BooleanField()
             )
-        )
+        ).order_by('order_num')
 
         # Предзагрузка уроков с прогрессом
         levels = Level.objects.prefetch_related(
