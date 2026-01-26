@@ -120,6 +120,7 @@ class LessonSerializer(serializers.ModelSerializer):
     dictionary_groups = DictionaryGroupSerializer(many=True, read_only=True)
     orthography_items = OrthographyItemSerializer(many=True, read_only=True)
     level_title = serializers.SerializerMethodField()
+    course_title = serializers.SerializerMethodField()
     have_table = serializers.SerializerMethodField()
 
     class Meta:
@@ -143,6 +144,9 @@ class LessonSerializer(serializers.ModelSerializer):
 
     def get_level_title(self, obj):
         return obj.level.title
+
+    def get_course_title(self, obj):
+        return obj.level.course.title
 
     def get_have_table(self, obj):
         return bool(obj.table)
