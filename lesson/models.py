@@ -18,6 +18,7 @@ class Course(models.Model):
 
 class Level(models.Model):
     """Уровень курса (Beginner, Intermediate, Advanced...)"""
+    order_num = models.IntegerField('Номер ПП',default=0)
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name="levels", verbose_name="Курс")
     title = models.CharField(max_length=255, verbose_name="Название уровня")
     slug = models.SlugField(verbose_name="Slug уровня",max_length=255)
@@ -27,9 +28,13 @@ class Level(models.Model):
     def __str__(self):
         return f"{self.course.title} → {self.title}"
 
+    class Meta:
+        ordering = ['order_num']
+
 
 class Lesson(models.Model):
     """Урок внутри уровня"""
+    order_num = models.IntegerField('Номер ПП', default=0)
     level = models.ForeignKey(Level, on_delete=models.CASCADE, related_name="lessons", verbose_name="Уровень")
     title = models.CharField(max_length=255, verbose_name="Название урока")
     short_description = models.CharField(max_length=255, verbose_name="Описание урока", null=True, blank=True)
@@ -44,6 +49,7 @@ class Lesson(models.Model):
         return f"{self.level.title} → {self.title}"
 
     class Meta:
+        ordering = ['order_num']
         indexes = [
             GinIndex(
                 name="lesson_title_trgm",

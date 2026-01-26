@@ -18,6 +18,7 @@ class Course(models.Model):
 
 
 class Level(models.Model):
+    order_num = models.IntegerField('Номер ПП', default=0)
     course = models.ForeignKey(Course, related_name="levels", on_delete=models.CASCADE)
     name = models.CharField(max_length=255)
     slug = models.SlugField(max_length=255)
@@ -26,7 +27,9 @@ class Level(models.Model):
     url = models.CharField(max_length=255, blank=True, null=True)
     icon = models.CharField(max_length=255, blank=True, null=True)
 
+
     class Meta:
+        ordering = ['order_num']
         unique_together = ("course", "slug")
         ordering = ["order"]
 

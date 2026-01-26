@@ -17,7 +17,7 @@ class TopicAdmin(admin.ModelAdmin):
 
 
 class LevelAdmin(admin.ModelAdmin):
-    list_display = ("name", "course", "order")
+    list_display = ("order_num","name", "course", "order")
 
 
 admin.site.register(Course)

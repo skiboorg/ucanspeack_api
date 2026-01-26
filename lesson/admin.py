@@ -108,7 +108,7 @@ class CourseAdmin(admin.ModelAdmin):
 # --- Админка Level (для редактирования отдельно) ---
 @admin.register(Level)
 class LevelAdmin(admin.ModelAdmin):
-    list_display = ("title", "course", "slug")
+    list_display = ("order_num","title", "course", "slug")
     search_fields = ("title", "course__title")
     list_filter = ("course",)
 
@@ -116,7 +116,7 @@ class LevelAdmin(admin.ModelAdmin):
 # --- Админка Lesson ---
 @admin.register(Lesson)
 class LessonAdmin(admin.ModelAdmin):
-    list_display = ("title", "level", "slug",)
+    list_display = ("order_num","title", "level", "slug",)
     search_fields = ("title", "level__title")
     list_filter = ("level",)
     inlines = [ModuleInline, DictionaryGroupInline,OrthographyItemInline]
