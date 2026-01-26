@@ -29,7 +29,7 @@ class Level(models.Model):
         return f"{self.course.title} → {self.title}"
 
     class Meta:
-        ordering = ['order_num']
+        ordering = ['-order_num']
 
 
 class Lesson(models.Model):
@@ -49,7 +49,7 @@ class Lesson(models.Model):
         return f"{self.level.title} → {self.title}"
 
     class Meta:
-        ordering = ['order_num']
+        ordering = ['-order_num']
         indexes = [
             GinIndex(
                 name="lesson_title_trgm",

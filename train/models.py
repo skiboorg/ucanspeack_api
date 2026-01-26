@@ -29,9 +29,9 @@ class Level(models.Model):
 
 
     class Meta:
-        ordering = ['order_num']
+        ordering = ['-order_num']
         unique_together = ("course", "slug")
-        ordering = ["order"]
+
 
     def __str__(self):
         return f"{self.course.name} - {self.name}"
