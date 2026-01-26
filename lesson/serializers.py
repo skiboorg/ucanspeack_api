@@ -137,6 +137,7 @@ class LessonSerializer(serializers.ModelSerializer):
                   "dictionary_groups",
                   "orthography_items",
                   "level_title",
+                  "course_title",
                   "have_table",
                   "orthography_description",
                   "table_file"
