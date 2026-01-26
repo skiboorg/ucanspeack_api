@@ -57,7 +57,7 @@ class CourseViewSet(viewsets.ModelViewSet):
                 default=Value(False),
                 output_field=BooleanField()
             )
-        )
+        ).order_by("order_num")
 
         # Теперь аннотируем курсы с количеством выполненных уроков
         courses = Course.objects.annotate(
