@@ -45,6 +45,8 @@ class Lesson(models.Model):
     table = models.TextField(null=True, blank=True)
     table_file = models.ImageField(upload_to='lesson/table',null=True, blank=True)
     orthography_description = models.TextField(verbose_name="Описание блока орфографии", null=True, blank=True)
+    is_common = models.BooleanField('Обобщающий', default=False)
+    is_free = models.BooleanField('Бесплатный', default=False)
     def __str__(self):
         return f"{self.level.title} → {self.title}"
 

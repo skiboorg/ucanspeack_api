@@ -42,7 +42,7 @@ class LevelListByCourseView(ListAPIView):
             Level.objects
             .filter(course__slug=course_slug)
             .select_related("course")
-            .order_by("order")
+            .order_by("order_num")
         )
 
     def list(self, request, *args, **kwargs):
