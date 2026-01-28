@@ -5,6 +5,9 @@ from .models import *
 
 
 class UserAdmin(BaseUserAdmin):
+
+    readonly_fields = ['date_joined']
+
     list_display = (
         'email',
         'full_name',
@@ -38,7 +41,8 @@ class UserAdmin(BaseUserAdmin):
                 "full_name",
                 "phone",
                 "avatar",
-             "subscription_expire"
+             "subscription_expire",
+             "date_joined"
          )}
          ),
         ('Permissions', {'fields': ('is_staff', 'is_superuser', 'groups',)}),)

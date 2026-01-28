@@ -39,8 +39,8 @@ class Lesson(models.Model):
     title = models.CharField(max_length=255, verbose_name="Название урока")
     short_description = models.CharField(max_length=255, verbose_name="Описание урока", null=True, blank=True)
     slug = models.SlugField(verbose_name="Slug урока",max_length=255)
-    url = models.URLField(max_length=500, verbose_name="URL урока", null=True, blank=True)
-    mp3 = models.URLField(null=True, blank=True, verbose_name="Аудио MP3 урока")
+    url = models.URLField(max_length=500, verbose_name="URL урока", null=True, blank=True, editable=False)
+    mp3 = models.URLField(null=True, blank=True, verbose_name="Аудио MP3 урока", editable=False)
     file = models.FileField(upload_to='lessons/mp3/', null=True, blank=True)
     table = models.TextField(null=True, blank=True)
     table_file = models.ImageField(upload_to='lesson/table',null=True, blank=True)
@@ -139,11 +139,11 @@ class LessonItem(models.Model):
 class Video(models.Model):
     """Видео внутри блока"""
     block = models.ForeignKey(ModuleBlock, on_delete=models.CASCADE,null=True, blank=True, related_name="videos", verbose_name="Блок")
-    video_src = models.URLField(verbose_name="Ссылка на видео",null=True, blank=True,)
+    video_src = models.URLField(verbose_name="Ссылка на видео",null=True, blank=True, editable=False)
     file = models.FileField(upload_to='lessons/module/video/', null=True, blank=True)
     video_number = models.CharField(max_length=10, blank=True, null=True)
     def __str__(self):
-        return self.video_src
+        return self.video_number
 
 
 class Phrase(models.Model):
@@ -153,7 +153,7 @@ class Phrase(models.Model):
     end_time = models.CharField(max_length=20, null=True, blank=True, verbose_name="Время конца")
     text_en = models.TextField(null=True, blank=True, verbose_name="Текст на английском")
     text_ru = models.TextField(null=True, blank=True, verbose_name="Текст на русском")
-    sound = models.URLField(null=True, blank=True, verbose_name="Ссылка на аудио")
+    sound = models.URLField(null=True, blank=True, verbose_name="Ссылка на аудио", editable=False)
     file = models.FileField(upload_to='lessons/module/video/phrase', null=True, blank=True)
     def __str__(self):
         return self.text_en or self.text_ru or "Фраза видео"

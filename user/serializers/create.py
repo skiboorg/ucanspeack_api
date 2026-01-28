@@ -2,6 +2,8 @@ from django.contrib.auth.password_validation import validate_password
 from django.core import exceptions as django_exceptions
 from django.db import IntegrityError, transaction
 from django.contrib.auth.tokens import default_token_generator
+from django.utils import timezone
+from datetime import timedelta
 
 from rest_framework import  serializers
 
@@ -56,7 +58,8 @@ class UserCreateSerializer(serializers.ModelSerializer):
             token = default_token_generator.make_token(user)
             user.is_active = True
             user.activate_token = token
-            user.save(update_fields=["is_active"])
+            user.subscription_expire = timezone.now() + timedelta(days=3)
+            user.save(update_fields=["is_active", "subscription_expire"])
 
         return user
 

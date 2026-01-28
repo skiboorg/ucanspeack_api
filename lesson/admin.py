@@ -7,7 +7,7 @@ from django.urls import reverse
 class PhraseInline(admin.TabularInline):
     model = Phrase
     extra = 0
-    fields = ("start_time", "end_time", "text_en", "text_ru", "sound")
+    fields = ("start_time", "end_time", "text_en", "text_ru", "file")
     readonly_fields = ()
     verbose_name = "Фраза"
     verbose_name_plural = "Фразы"
