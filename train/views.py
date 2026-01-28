@@ -1,10 +1,12 @@
+from rest_framework import status
 from rest_framework.generics import ListAPIView, RetrieveAPIView
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
 from rest_framework.views import APIView
 from django.db.models import Prefetch, Value, BooleanField
+from django.db import transaction
 
-from .models import Course, Level, Topic, Phrase, PhraseFavorite
+from .models import Course, Level, Topic, Phrase, PhraseFavorite, TopicDone, LevelDone
 from .serializers import (
     CourseSerializer,
     LevelSerializer,
@@ -154,3 +156,60 @@ class ToggleFavoriteAPIView(APIView):
         if not created:
             obj.delete()
         return Response(status=200)
+
+
+class TopicDoneAPIView(APIView):
+
+    def post(self, request):
+        topic_id = request.data["topic_id"]
+        try:
+            topic = Topic.objects.get(id=topic_id)
+        except Topic.DoesNotExist:
+            return Response(
+                {"error": "Topic not found"},
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+        with transaction.atomic():
+            # Создаем TopicDone (get_or_create предотвращает дубликаты)
+            topic_done, created = TopicDone.objects.get_or_create(
+                user=request.user,
+                topic=topic
+            )
+
+            if not created:
+                return Response(
+                    {"message": "Topic already marked as done"},
+                    status=status.HTTP_200_OK
+                )
+
+            # Проверяем, выполнены ли все топики в уровне
+            level = topic.level
+            total_topics = level.topics.count()
+            print('total_topics', total_topics)
+            completed_topics = TopicDone.objects.filter(
+                user=request.user,
+                topic__level=level
+            ).count()
+            print('completed_topics', completed_topics)
+
+            level_completed = False
+            if total_topics > 0 and total_topics == completed_topics:
+                # Все топики выполнены - создаем LevelDone
+                LevelDone.objects.get_or_create(
+                    user=request.user,
+                    level=level
+                )
+                level_completed = True
+
+            return Response(
+                {
+                    "message": "Topic marked as done",
+                    "level_completed": level_completed,
+                    "progress": {
+                        "completed_topics": completed_topics,
+                        "total_topics": total_topics
+                    }
+                },
+                status=status.HTTP_201_CREATED
+            )

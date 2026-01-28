@@ -115,3 +115,11 @@ class Phrase(models.Model):
 class PhraseFavorite(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE,blank=True,null=True)
     phrase = models.ForeignKey(Phrase,on_delete=models.CASCADE,blank=True,null=True, related_name="trainer_phrase_favorites")
+
+class TopicDone(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE,blank=True,null=True)
+    topic = models.ForeignKey(Topic,on_delete=models.CASCADE,blank=True,null=True)
+
+class LevelDone(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE,blank=True,null=True)
+    level = models.ForeignKey(Level,on_delete=models.CASCADE,blank=True,null=True)

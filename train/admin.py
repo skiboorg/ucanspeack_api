@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Course, Level, Topic, AudioFile, Phrase, PhraseFavorite
+from .models import Course, Level, Topic, AudioFile, Phrase, PhraseFavorite, TopicDone,LevelDone
 
 class AudioFileInline(admin.TabularInline):
     model = AudioFile
@@ -24,3 +24,5 @@ admin.site.register(Course)
 admin.site.register(Level, LevelAdmin)
 admin.site.register(Topic, TopicAdmin)
 admin.site.register(PhraseFavorite)
+admin.site.register(TopicDone)
+admin.site.register(LevelDone)

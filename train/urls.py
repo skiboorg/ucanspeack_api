@@ -5,7 +5,8 @@ from .views import (
     TopicListByLevelView,
     TopicDetailView,
 ToggleFavoriteAPIView,
-FavoriteListAPIView
+FavoriteListAPIView,
+TopicDoneAPIView
 )
 
 urlpatterns = [
@@ -32,6 +33,11 @@ urlpatterns = [
         "toggle_favorite/",
         ToggleFavoriteAPIView.as_view(),
         name="toggle-favorite",
+    ),
+    path(
+        "topic_done/",
+        TopicDoneAPIView.as_view(),
+        name="topic-done",
     ),
     path('favorites/',
          FavoriteListAPIView.as_view()
