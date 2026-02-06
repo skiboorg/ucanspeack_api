@@ -100,8 +100,8 @@ class ModuleBlock(models.Model):
     """Блок контента внутри модуля"""
     module = models.ForeignKey(Module, on_delete=models.CASCADE, related_name="blocks", verbose_name="Модуль")
     sorting = models.IntegerField(null=True, blank=True, verbose_name="Сортировка блока")
-    caption = CKEditor5Field(null=True, blank=True, verbose_name="Текст/описание блока")
-    type3_content = CKEditor5Field(blank=True, verbose_name="HTML контент блока (type3)")
+    caption = CKEditor5Field(null=True, blank=True, verbose_name="Текст/описание блока",config_name='extends')
+    type3_content = CKEditor5Field(blank=True, verbose_name="HTML контент блока (type3)",config_name='extends')
     #type3_content = models.JSONField(default=list, blank=True, verbose_name="HTML контент блока (type3)")
     can_be_done = models.BooleanField('Выполняемыей', default=True,null=False)
 
@@ -255,3 +255,23 @@ class OrthographyItem(models.Model):
 class OrthographyItemDone(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, blank=True, null=True)
     orthography_item = models.ForeignKey(OrthographyItem, on_delete=models.CASCADE, blank=True, null=True)
+
+
+class Tariff(models.Model):
+    order = models.IntegerField(default=0, null=True)
+    is_for_school = models.BooleanField(default=False, null=False)
+    is_decorated = models.BooleanField(default=False, null=False)
+    badge_text = models.CharField(max_length=30, null=True, blank=True)
+    price = models.IntegerField(default=0, null=True, blank=True)
+    price_text = models.CharField(max_length=30, null=True, blank=True)
+    description = models.TextField(null=True, blank=True)
+
+    def __str__(self):
+        return  f'{self.price} руб'
+
+    class Meta:
+        ordering = ['order']
+
+class TariffItem(models.Model):
+    tariff = models.ForeignKey(Tariff, on_delete=models.CASCADE, blank=True, null=True, related_name="tariff_items")
+    text = models.TextField(null=False, blank=True)

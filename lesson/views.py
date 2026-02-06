@@ -1,5 +1,7 @@
 from rest_framework import viewsets, status, generics
 from rest_framework.response import Response
+
+from user.models.school import School
 from .models import *
 from .serializers import *
 from rest_framework.decorators import action
@@ -16,6 +18,15 @@ class DictionaryItemFavoriteListAPIView(generics.ListAPIView):
             .filter(dictionaryitemfavorite__user=self.request.user)
             .annotate(is_favorite=Value(True, output_field=BooleanField()))
         )
+
+class TariffsListAPIView(generics.ListAPIView):
+    serializer_class = TariffSerializer
+
+    def get_queryset(self):
+        if not self.request.user.is_authenticated:
+            return None
+        is_pupil = School.objects.filter(pupils=self.request.user).exists()
+        return Tariff.objects.filter(is_for_school=is_pupil)
 
 class LessonItemFavoriteListAPIView(generics.ListAPIView):
     serializer_class = LessonItemFavoriteItemSerializer

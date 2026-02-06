@@ -27,7 +27,7 @@ class VideoInline(admin.TabularInline):
 class LessonItemInline(admin.TabularInline):
     model = LessonItem
     extra = 0
-    fields = ("text_ru", "text_en", "sound")
+    fields = ("text_ru", "text_en", "file")
     verbose_name = "Элемент урока"
     verbose_name_plural = "Элементы урока"
 
@@ -159,6 +159,7 @@ class ModuleAdmin(admin.ModelAdmin):
 class ModuleBlockAdmin(admin.ModelAdmin):
     list_display = ("id", "module", "sorting", "caption_preview", "lesson_info")
     list_filter = ("module__lesson", "module")
+    inlines = [LessonItemInline]
     search_fields = (
         "caption",
         "module__title",  # Поиск по названию модуля
@@ -212,6 +213,8 @@ class DictionaryGroupAdmin(admin.ModelAdmin):
             return f"{lesson.title} → {module.title} → Блок {obj.module.sorting}"
         return "-"
 
+
+
 @admin.register(ModuleBlockDone)
 class ModuleBlockDoneAdmin(admin.ModelAdmin):
     list_display = ("id",)
@@ -227,3 +230,12 @@ class DictionaryItemFavoriteAdmin(admin.ModelAdmin):
 @admin.register(LessonItemFavoriteItem)
 class LessonItemFavoriteItemAdmin(admin.ModelAdmin):
     list_display = ("id",)
+
+class TariffItemInline(admin.TabularInline):
+    model = TariffItem
+    extra = 0
+
+@admin.register(Tariff)
+class LessonItemFavoriteItemAdmin(admin.ModelAdmin):
+    list_display = ("order",'price','price_text')
+    inlines = [TariffItemInline]

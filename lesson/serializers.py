@@ -3,7 +3,7 @@ from rest_framework import serializers
 from lesson.models import (
     Course, Level, Lesson, Module, ModuleBlock,
     Video, Phrase, LessonItem, DictionaryGroup, DictionaryItem, ModuleBlockDone, DictionaryItemFavorite,
-    LessonItemFavoriteItem,OrthographyItem,OrthographyItemDone
+    LessonItemFavoriteItem,OrthographyItem,OrthographyItemDone, Tariff, TariffItem
 )
 
 class DictionaryItemSerializer(serializers.ModelSerializer):
@@ -198,3 +198,14 @@ class CourseSerializer(serializers.ModelSerializer):
         fields = ["id", "title", "slug", "levels","cover",'bg_color']
 
 
+class TariffItemSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TariffItem
+        fields = "__all__"
+
+class TariffSerializer(serializers.ModelSerializer):
+    tariff_items = TariffItemSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Tariff
+        fields = "__all__"

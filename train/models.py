@@ -111,7 +111,6 @@ class Phrase(models.Model):
     def __str__(self):
         return f"{self.text_ru} / {self.text_en}"
 
-
 class PhraseFavorite(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE,blank=True,null=True)
     phrase = models.ForeignKey(Phrase,on_delete=models.CASCADE,blank=True,null=True, related_name="trainer_phrase_favorites")

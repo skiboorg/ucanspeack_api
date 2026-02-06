@@ -18,4 +18,5 @@ router.register("dictionary-items", DictionaryItemViewSet)
 urlpatterns = [
     path('dictionary_favorites/', DictionaryItemFavoriteListAPIView.as_view()),
     path('lesson_item_favorites/', LessonItemFavoriteListAPIView.as_view()),
+    path('tariffs/', TariffsListAPIView.as_view()),
 ] + router.urls
