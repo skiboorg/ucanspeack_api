@@ -150,7 +150,7 @@ class LessonSerializer(serializers.ModelSerializer):
         return obj.level.course.title
 
     def get_have_table(self, obj):
-        return bool(obj.table)
+        return bool(obj.table) or bool(obj.table_file)
 
 class LessonShortSerializer(serializers.ModelSerializer):
     progress = serializers.IntegerField(read_only=True)

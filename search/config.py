@@ -74,6 +74,8 @@ SEARCH_CONFIG = [
                    "text_en",
                    "file",
                    "topic__slug",
+                   "topic__level__slug",
+                   "topic__level__course__slug",
                    ],
     },
 ]
