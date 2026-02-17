@@ -18,7 +18,7 @@ class LessonItemFavoriteItemSerializer(serializers.ModelSerializer):
     is_like = serializers.BooleanField(read_only=True)
     class Meta:
         model = LessonItem
-        fields = ["id", "text_ru", "text_en", "sound","is_like"]
+        fields = ["id", "text_ru", "text_en", "file","is_like"]
 
 class DictionaryItemFavoriteSerializer(serializers.ModelSerializer):
     dictionary_item = DictionaryItemSerializer(many=False, read_only=True)
