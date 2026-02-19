@@ -61,6 +61,10 @@ class SchoolPupilViewSet(viewsets.ViewSet):
             )
 
         pupil = serializer.save()
+
+        pupil.subscription_expire = school.admin.subscription_expire
+        pupil.save()
+
         school.pupils.add(pupil)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
