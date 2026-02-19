@@ -13,7 +13,9 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = [
+            'id',
             'is_school',
+            'max_logins',
             'avatar',
             'email',
             'full_name',
@@ -24,6 +26,7 @@ class UserSerializer(serializers.ModelSerializer):
             'is_pupil',
             'is_subscription_expired',
         ]
+        read_only_fields = ['id']
 
         extra_kwargs = {
             'password': {'required': False},
