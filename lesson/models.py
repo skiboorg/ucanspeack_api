@@ -172,6 +172,16 @@ class Phrase(models.Model):
             ),
         ]
 
+class Watermark(models.Model):
+    """Фразы из видео"""
+    video = models.ForeignKey(Video, on_delete=models.CASCADE, related_name="watermarks", verbose_name="Видео")
+    start_time = models.CharField(max_length=20, null=True, blank=True, verbose_name="Время начала")
+    end_time = models.CharField(max_length=20, null=True, blank=True, verbose_name="Время конца")
+    text = models.TextField(null=True, blank=True, verbose_name="Текст ")
+
+    def __str__(self):
+        return self.text
+
 class DictionaryGroup(models.Model):
     """Группа слов в словаре урока"""
     lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE, related_name="dictionary_groups", verbose_name="Урок")

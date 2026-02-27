@@ -12,6 +12,13 @@ class PhraseInline(admin.TabularInline):
     verbose_name = "Фраза"
     verbose_name_plural = "Фразы"
 
+class WatermarkInline(admin.TabularInline):
+    model = Watermark
+    extra = 0
+    fields = ("start_time", "end_time", "text")
+    readonly_fields = ()
+    verbose_name = "Watermark"
+    verbose_name_plural = "Watermarks"
 
 # --- Видео (inline для блока модуля) ---
 class VideoInline(admin.TabularInline):
@@ -185,7 +192,7 @@ class ModuleBlockAdmin(admin.ModelAdmin):
 class VideoAdmin(admin.ModelAdmin):
     list_display = ("id", "video_number")  # оставил правильный ForeignKey
     search_fields = ("video_number",)
-    inlines = [PhraseInline]
+    inlines = [PhraseInline,WatermarkInline]
 
 
 # --- Админка Phrase ---

@@ -3,7 +3,7 @@ from rest_framework import serializers
 from lesson.models import (
     Course, Level, Lesson, Module, ModuleBlock,
     Video, Phrase, LessonItem, DictionaryGroup, DictionaryItem, ModuleBlockDone, DictionaryItemFavorite,
-    LessonItemFavoriteItem,OrthographyItem,OrthographyItemDone, Tariff, TariffItem
+    LessonItemFavoriteItem,OrthographyItem,OrthographyItemDone, Tariff, TariffItem,Watermark
 )
 
 class DictionaryItemSerializer(serializers.ModelSerializer):
@@ -40,14 +40,20 @@ class PhraseSerializer(serializers.ModelSerializer):
         model = Phrase
         fields = ["id", "start_time", "end_time", "text_en", "text_ru", "sound",'file']
 
+class WatermarkSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Watermark
+        fields = ["start_time", "end_time", "text",]
+
 
 class VideoSerializer(serializers.ModelSerializer):
     phrases = PhraseSerializer(many=True, read_only=True)
+    watermarks = WatermarkSerializer(many=True, read_only=True)
     file = serializers.SerializerMethodField()
 
     class Meta:
         model = Video
-        fields = ["id", "video_src", "phrases", "file", "video_number"]
+        fields = ["id", "video_src", "phrases","watermarks", "file", "video_number"]
 
     def get_file(self, obj):
         request = self.context.get("request")
