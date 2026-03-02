@@ -190,7 +190,7 @@ class ModuleBlockAdmin(admin.ModelAdmin):
 # --- Админка Video ---
 @admin.register(Video)
 class VideoAdmin(admin.ModelAdmin):
-    list_display = ("id", "video_number")  # оставил правильный ForeignKey
+    list_display = ("id", "video_number",'block__module__lesson__title')  # оставил правильный ForeignKey
     search_fields = ("video_number",)
     inlines = [PhraseInline,WatermarkInline]
 
