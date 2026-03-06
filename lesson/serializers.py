@@ -201,7 +201,15 @@ class CourseSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Course
-        fields = ["id", "title", "slug", "levels","cover",'bg_color']
+        fields = ["id",
+                  "title",
+                  "slug",
+                  "levels",
+                  "cover",
+                  'bg_color',
+                  'progress_bg_color',
+                  'progress_color'
+                  ]
 
 
 class TariffItemSerializer(serializers.ModelSerializer):

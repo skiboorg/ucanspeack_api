@@ -34,7 +34,7 @@ class VideoInline(admin.TabularInline):
 class LessonItemInline(admin.TabularInline):
     model = LessonItem
     extra = 0
-    fields = ("text_ru", "text_en", "file")
+    fields = ("order_num","text_ru", "text_en", "file")
     verbose_name = "Элемент урока"
     verbose_name_plural = "Элементы урока"
 
@@ -166,6 +166,7 @@ class ModuleAdmin(admin.ModelAdmin):
 class ModuleBlockAdmin(admin.ModelAdmin):
     list_display = ("id", "module", "sorting", "caption_preview", "lesson_info")
     list_filter = ("module__lesson", "module")
+    autocomplete_fields = ["module"]
     inlines = [LessonItemInline]
     search_fields = (
         "caption",

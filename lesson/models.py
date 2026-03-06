@@ -11,6 +11,8 @@ class Course(models.Model):
     slug = models.SlugField(verbose_name="Slug курса",max_length=255)
     cover = models.FileField(upload_to='lessons/course_covers/', null=True, blank=True)
     bg_color = models.CharField(max_length=20, null=True, blank=True)
+    progress_bg_color = models.CharField(max_length=20, null=True, blank=True)
+    progress_color = models.CharField(max_length=20, null=True, blank=True)
 
     def __str__(self):
         return self.title
@@ -114,6 +116,7 @@ class ModuleBlock(models.Model):
 
 class LessonItem(models.Model):
     """Фразы или элементы внутри блока"""
+    order_num = models.IntegerField(default=0, null=True, blank=True)
     block = models.ForeignKey(ModuleBlock, on_delete=models.CASCADE,null=True, blank=True, related_name="items", verbose_name="Блок")
     text_ru = models.TextField(null=True, blank=True, verbose_name="Текст на русском")
     text_en = models.TextField(null=True, blank=True, verbose_name="Текст на английском")
@@ -123,6 +126,7 @@ class LessonItem(models.Model):
         return self.text_en or self.text_ru or "Элемент урока"
 
     class Meta:
+        ordering = ['order_num']
         indexes = [
             GinIndex(
                 name="lessonitem_text_ru_trgm",
@@ -159,6 +163,7 @@ class Phrase(models.Model):
         return self.text_en or self.text_ru or "Фраза видео"
 
     class Meta:
+        ordering = ['id']
         indexes = [
             GinIndex(
                 name="lesson_phrase_text_ru_trgm",

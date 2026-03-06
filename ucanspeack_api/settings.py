@@ -28,6 +28,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'djoser',
+    "django.contrib.postgres",
     #'rest_framework.authtoken',
     'rest_framework',
     'corsheaders',
@@ -84,15 +85,7 @@ DATABASES = {
         'HOST' : '127.0.0.1',
         'PORT' : '5432',
         'ATOMIC_REQUESTS': True
-    },
-    "mysql_source": {
-        "ENGINE": "django.db.backends.mysql",
-        "NAME": "ucan_db",
-        "USER": "root",
-        "PASSWORD": "dfp217230lf",
-        "HOST": "127.0.0.1",
-        "PORT": "3306",
-    },
+    }
 }
 
 
