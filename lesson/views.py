@@ -242,64 +242,7 @@ class LevelViewSet(viewsets.ModelViewSet):
             )
 
         return levels
-    def get_queryset_old(self):
-        user = self.request.user
 
-        # Аннотируем уроки с прогрессом
-        lessons_qs = Lesson.objects.annotate(
-            total_blocks=Count('modules__blocks', distinct=True),
-            done_blocks=Count(
-                'modules__blocks__moduleblockdone',
-                filter=Q(modules__blocks__moduleblockdone__user=user),
-                distinct=True
-            ),
-        ).annotate(
-            progress=Case(
-                When(total_blocks=0, then=Value(0)),
-                default=ExpressionWrapper(
-                    F('done_blocks') * 100 / F('total_blocks'),
-                    output_field=IntegerField()
-                ),
-                output_field=IntegerField()
-            ),
-            is_done=Case(
-                When(total_blocks=0, then=Value(False)),
-                When(total_blocks=F('done_blocks'), then=Value(True)),
-                default=Value(False),
-                output_field=BooleanField()
-            )
-        ).order_by('order_num')
-
-        # Предзагрузка уроков с прогрессом
-        levels = Level.objects.prefetch_related(
-            Prefetch('lessons', queryset=lessons_qs)
-        )
-
-        # Теперь считаем прогресс уровня
-        # total_lessons = общее кол-во уроков
-        # done_lessons = кол-во уроков, где is_done=True
-        levels = levels.annotate(
-            total_lessons=Count('lessons', distinct=True),
-            done_lessons=Count('lessons', filter=Q(lessons__modules__blocks__moduleblockdone__user=user),
-                               distinct=True),
-        ).annotate(
-            progress=Case(
-                When(total_lessons=0, then=Value(0)),
-                default=ExpressionWrapper(
-                    F('done_lessons') * 100 / F('total_lessons'),
-                    output_field=IntegerField()
-                ),
-                output_field=IntegerField()
-            ),
-            is_done=Case(
-                When(total_lessons=0, then=Value(False)),
-                When(total_lessons=F('done_lessons'), then=Value(True)),
-                default=Value(False),
-                output_field=BooleanField()
-            )
-        )
-
-        return levels
 
 class LessonViewSet(viewsets.ModelViewSet):
     queryset = Lesson.objects.all()
@@ -331,7 +274,7 @@ class LessonViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
 
     def get_queryset(self):
-        print('asd')
+
         user = self.request.user
 
         # ---------- DictionaryItem queryset ----------
@@ -417,82 +360,6 @@ class LessonViewSet(viewsets.ModelViewSet):
             )
 
         return lessons_qs
-    def get_queryset_old(self):
-        print('asd')
-        user = self.request.user
-
-        # ---------- DictionaryItem queryset ----------
-        dictionary_items_qs = DictionaryItem.objects.all()
-
-        if user.is_authenticated:
-            favorites = DictionaryItemFavorite.objects.filter(
-                user=user,
-                dictionary_item=OuterRef("pk")
-            )
-            dictionary_items_qs = dictionary_items_qs.annotate(
-                is_favorite=Exists(favorites)
-            )
-        else:
-            dictionary_items_qs = dictionary_items_qs.annotate(
-                is_favorite=Value(False, output_field=BooleanField())
-            )
-
-        # ---------- Modules queryset ----------
-        modules_qs = Module.objects.annotate(
-            total_blocks=Count('blocks', distinct=True),
-            done_blocks=Count(
-                'blocks__moduleblockdone',
-                filter=Q(blocks__moduleblockdone__user=user),
-                distinct=True
-            )
-        ).annotate(
-            is_done=Case(
-                When(total_blocks=0, then=Value(False)),
-                When(total_blocks=F('done_blocks'), then=Value(True)),
-                default=Value(False),
-                output_field=BooleanField()
-            )
-        ).order_by('sorting')
-
-        # ---------- Lessons queryset ----------
-        lessons_qs = Lesson.objects.annotate(
-            total_blocks=Count('modules__blocks', distinct=True),
-            done_blocks=Count(
-                'modules__blocks__moduleblockdone',
-                filter=Q(modules__blocks__moduleblockdone__user=user),
-                distinct=True
-            )
-        ).annotate(
-            progress=Case(
-                When(total_blocks=0, then=Value(0)),
-                default=F('done_blocks') * 100 / F('total_blocks'),
-                output_field=IntegerField()
-            ),
-            is_done=Case(
-                When(total_blocks=0, then=Value(False)),
-                When(total_blocks=F('done_blocks'), then=Value(True)),
-                default=Value(False),
-                output_field=BooleanField()
-            )
-        ).prefetch_related(
-            Prefetch('modules', queryset=modules_qs),
-            Prefetch(
-                'dictionary_groups__items',
-                queryset=dictionary_items_qs
-            )
-        )
-
-        # for lesson in lessons_qs:
-        #     for module in lesson.modules.all():
-        #         for block in module.blocks.all():
-        #             if not block.can_be_done:
-        #                 ModuleBlockDone.objects.get_or_create(
-        #                     user=user,
-        #                     module_block=block,
-        #                 )
-
-        return lessons_qs
-
 
 class ModuleViewSet(viewsets.ModelViewSet):
     queryset = Module.objects.all()
@@ -604,65 +471,7 @@ class ModuleViewSet(viewsets.ModelViewSet):
             )
 
         return modules_qs
-    def get_queryset_old(self):
-        user = self.request.user
 
-        # queryset для DictionaryItem
-        dictionary_items_qs = DictionaryItem.objects.all()
-
-        if user.is_authenticated:
-            favorites = DictionaryItemFavorite.objects.filter(
-                user=user,
-                dictionary_item=OuterRef("pk")
-            )
-            dictionary_items_qs = dictionary_items_qs.annotate(
-                is_favorite=Exists(favorites)
-            )
-        else:
-            dictionary_items_qs = dictionary_items_qs.annotate(
-                is_favorite=Value(False, output_field=BooleanField())
-            )
-
-        # LessonItem favorites
-        lesson_item_favorites_qs = LessonItemFavoriteItem.objects.none()
-
-        if user.is_authenticated:
-            lesson_item_favorites_qs = LessonItemFavoriteItem.objects.filter(user=user)
-
-        return (
-            Module.objects
-            .annotate(
-                total_blocks=Count('blocks', distinct=True),
-
-                done_blocks=Count(
-                    'blocks__moduleblockdone',
-                    filter=Q(blocks__moduleblockdone__user=user),
-                    distinct=True
-                ),
-            )
-            .annotate(
-                is_done=Case(
-                    When(
-                        total_blocks=F('done_blocks'),
-                        total_blocks__gt=0,
-                        then=True
-                    ),
-                    default=False,
-                    output_field=BooleanField()
-                )
-            )
-            .prefetch_related(
-                Prefetch(
-                    "module_dictionary_groups__items",
-                    queryset=dictionary_items_qs
-                ),
-                Prefetch(
-                    "blocks__items__lesson_item_favorites",
-                    queryset=lesson_item_favorites_qs,
-                    to_attr="user_favorites"
-                )
-            )
-        )
 
     @action(detail=False, methods=['post'], url_path='toggle_favorite')
     def toggle_favorite(self, request, id=None):

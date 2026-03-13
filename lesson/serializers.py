@@ -163,7 +163,7 @@ class LessonShortSerializer(serializers.ModelSerializer):
     is_done = serializers.BooleanField(read_only=True)
     class Meta:
         model = Lesson
-        fields = ["id", "title", "slug","short_description","progress", "is_done",'is_free']
+        fields = ["id", "title", "slug","short_description","progress", "is_done",'is_free','is_common']
 
 
 class LevelSerializer(serializers.ModelSerializer):
