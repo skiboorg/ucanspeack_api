@@ -47,11 +47,21 @@ class UpdateUser(APIView):
         print(request.data)
         serializer = UserSerializer(instance=request.user, data=request.data)
         password = request.data.get('password', None)
+        logo = request.FILES.get('logo', None)
+
+
         if serializer.is_valid():
             user = serializer.save()
+
             if password:
                 user.set_password(password)
                 user.save()
+
+            if logo:
+                school_obj = School.objects.get(admin=user)
+                school_obj.image = logo
+                school_obj.save()
+
             return Response(status=200)
         else:
             print(serializer.errors)

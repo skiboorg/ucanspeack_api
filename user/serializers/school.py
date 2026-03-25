@@ -4,4 +4,4 @@ from user.models import School
 class SchoolSerializer(serializers.ModelSerializer):
     class Meta:
         model = School
-        fields = ['image']
+        fields = ['slug','image']
