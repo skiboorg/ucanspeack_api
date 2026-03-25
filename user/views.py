@@ -1,11 +1,16 @@
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
+
+from user.models import School
 from user.serializers.me import UserSerializer
 from djoser.views import TokenCreateView
 from rest_framework import generics, viewsets, parsers
 
 import logging
+
+from user.serializers.school import SchoolSerializer
+
 logger = logging.getLogger(__name__)
 
 
@@ -24,6 +29,18 @@ class GetUser(generics.RetrieveAPIView):
         print(self.request.user)
         return self.request.user
 
+
+class SchoolData(APIView):
+    def get(self, request):
+        slug = request.GET.get('slug', None)
+        result = {'image':None}
+        if slug:
+            qs = School.objects.filter(slug=slug)
+            if qs.exists():
+                school = qs.first()
+                serializer = SchoolSerializer(school)
+                result = serializer.data
+        return Response(result, status=200)
 
 class UpdateUser(APIView):
     def patch(self, request):

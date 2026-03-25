@@ -9,5 +9,6 @@ router.register(r'school-pupils', SchoolPupilViewSet, basename='school-pupils')
 urlpatterns = [
     path('me', views.GetUser.as_view()),
     path('update', views.UpdateUser.as_view()),
+    path('school', views.SchoolData.as_view()),
 
 ]+ router.urls
