@@ -105,7 +105,7 @@ class ModuleBlock(models.Model):
     caption = CKEditor5Field(null=True, blank=True, verbose_name="Текст/описание блока",config_name='extends')
     type3_content = CKEditor5Field(blank=True, verbose_name="HTML контент блока (type3)",config_name='extends')
     #type3_content = models.JSONField(default=list, blank=True, verbose_name="HTML контент блока (type3)")
-    can_be_done = models.BooleanField('Выполняемыей', default=True,null=False)
+    can_be_done = models.BooleanField('Выполняемый', default=True,null=False)
 
     def __str__(self):
         return f"Блок {self.sorting} модуля {self.module.title}"
