@@ -2,7 +2,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 
-from user.models import School
+from user.models import School, UserToken
 from user.serializers.me import UserSerializer
 from djoser.views import TokenCreateView
 from rest_framework import generics, viewsets, parsers
@@ -29,6 +29,12 @@ class GetUser(generics.RetrieveAPIView):
         print(self.request.user)
         return self.request.user
 
+
+class LogoutUser(APIView):
+    def post(self, request):
+
+        UserToken.objects.filter(user_id=request.data['user_id']).delete()
+        return Response(status=200)
 
 class SchoolData(APIView):
     def get(self, request):

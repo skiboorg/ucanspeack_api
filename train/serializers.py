@@ -105,7 +105,15 @@ class PhraseSerializer(serializers.ModelSerializer):
         )
 
     def get_is_like(self, obj):
-        return bool(getattr(obj, "user_favorites", []))
+        # если аннотация уже есть — используем её
+        if hasattr(obj, "is_like"):
+            return obj.is_like
+
+        # иначе идём в БД
+        user = self.context["request"].user
+        if not user.is_authenticated:
+            return False
+        return obj.trainer_phrase_favorites.filter(user=user).exists()
 
 
 # ✅ Один топик со всем содержимым

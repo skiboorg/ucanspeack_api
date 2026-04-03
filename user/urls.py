@@ -10,5 +10,6 @@ urlpatterns = [
     path('me', views.GetUser.as_view()),
     path('update', views.UpdateUser.as_view()),
     path('school', views.SchoolData.as_view()),
+    path('logout', views.LogoutUser.as_view()),
 
 ]+ router.urls
